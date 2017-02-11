@@ -152,9 +152,6 @@ server {
     ssl_stapling on;
     ssl_stapling_verify on;
 
-    ## verify chain of trust of OCSP response using Root CA and Intermediate certs
-#    ssl_trusted_certificate /path/to/root_CA_cert_plus_intermediates;
-
     resolver 8.8.8.8 8.8.4.4 valid=300s;
     resolver_timeout 5s;
 
