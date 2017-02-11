@@ -16,6 +16,8 @@ fi
 
 adduser $1
 
+#TODO: check if user was succesfully created (valid name, etc.)
+
 mkdir "/home/$1/www/"
 chown -R $1:$1 "/home/$1/www/"
 
@@ -100,6 +102,8 @@ service php5-fpm reload
 #certbot
 echo Fetching letsencrypt.org certificate for $2
 certbot certonly --rsa-key-size 4096 --webroot -w /home/$1/www/ -d $2
+
+#TODO: out-source tls config to external file and include it (easier to keep config up-to-date)
 
 #replace non-https config with https config
 cat > "/etc/nginx/sites-available/$2.conf" <<'END'
