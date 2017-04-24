@@ -201,6 +201,12 @@ server {
                 log_not_found off;
         }
 
+        # letsencrypt acme challenge (necessary when redirecting to nodejs or other server)
+#        location ^~ /.well-known/acme-challenge/ {
+#                default_type "text/plain";
+#                alias /home/$1/www/.well-known/acme-challenge/;
+#        }
+
     access_log  /var/log/nginx/$2-access.log;
     error_log  /var/log/nginx/$2-error.log;
 }
