@@ -68,16 +68,16 @@ END
 systemctl enable certbot.timer
 
 #php-suhosin installation
-wget -q -O suhosin.tar.gz `curl --silent https://api.github.com/repos/stefanesser/suhosin/releases/latest | grep 'tarball_url' | sed 's/"tarball_url": //g' | sed 's/"//g' | sed 's/,//g'`
+wget -q -O suhosin.tar.gz `curl --silent https://api.github.com/repos/sektioneins/suhosin/releases/latest | grep 'tarball_url' | sed 's/"tarball_url": //g' | sed 's/"//g' | sed 's/,//g'`
 tar -xzf suhosin.tar.gz
-cd stefanesser-suhosin-*
+cd sektioneins-suhosin-*
 phpize
 ./configure
 make
 make install
 cd ..
 rm suhosin.tar.gz
-rm -r stefanesser-suhosin-*
+rm -r sektioneins-suhosin-*
 
 cat > /etc/php5/mods-available/suhosin.ini <<END
 extension=suhosin.so
