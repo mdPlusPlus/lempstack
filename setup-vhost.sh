@@ -201,7 +201,7 @@ server {
                 log_not_found off;
         }
 
-        # letsencrypt acme challenge (necessary when redirecting to nodejs or other server)
+        # letsencrypt acme challenge (necessary when redirecting to nodejs or other server) (TODO still necessary with python-certbot-nginx?)
 #        location ^~ /.well-known/acme-challenge/ {
 #                default_type "text/plain";
 #                alias /home/$1/www/.well-known/acme-challenge/;

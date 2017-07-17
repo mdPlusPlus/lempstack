@@ -41,7 +41,7 @@ apt-get install \
     wget
 
 #certbot installation
-apt-get install certbot -t jessie-backports -y
+apt-get install certbot python-certbot-nginx -t jessie-backports -y
 
 #systemd timer
 cat > /etc/systemd/system/certbot.service <<END
@@ -50,7 +50,7 @@ Description=Automatic certification renewal for letsencrypt
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/certbot renew --quiet --post-hook "service nginx reload"
+ExecStart=/usr/bin/certbot renew --quiet --nginx
 END
 
 cat > /etc/systemd/system/certbot.timer <<END
