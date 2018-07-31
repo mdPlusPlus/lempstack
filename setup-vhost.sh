@@ -50,43 +50,44 @@ END
 #create non-https config for certbot
 cat > "/etc/nginx/sites-available/$2.conf" <<END
 server{
+    server_name $2;
     listen 80;
     listen [::]:80;
-    server_name $2;
+    
     root /home/$1/www/;
     index index.php;
 
-        location = /favicon.ico {
-                log_not_found off;
-                access_log off;
-        }
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
 
-        location = /robots.txt {
-                allow all;
-                log_not_found off;
-                access_log off;
-        }
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
 
-        location / {
-                # This is cool because no php is touched for static content
-                try_files \$uri \$uri/ /index.php?q=\$uri&\$args;
-        }
+    location / {
+        # This is cool because no php is touched for static content
+        try_files \$uri \$uri/ /index.php?q=\$uri&\$args;
+    }
 
-        location ~ \.php\$ {
-                #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
-                include fastcgi_params;
-                fastcgi_intercept_errors on;
-                fastcgi_index index.php;
-                fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-                try_files \$uri =404;
-                fastcgi_pass unix:/var/run/php5-fpm-$1.sock;
-                error_page 404 /404page.html;
-        }
+    location ~ \.php\$ {
+        #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+        include fastcgi_params;
+        fastcgi_intercept_errors on;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        try_files \$uri =404;
+        fastcgi_pass unix:/var/run/php5-fpm-$1.sock;
+        error_page 404 /404page.html;
+    }
 
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico)\$ {
-                expires max;
-                log_not_found off;
-        }
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)\$ {
+        expires max;
+        log_not_found off;
+    }
 
     access_log  /var/log/nginx/$2-access.log;
     error_log  /var/log/nginx/$2-error.log;
@@ -108,18 +109,71 @@ certbot certonly --rsa-key-size 4096 --webroot -w /home/$1/www/ -d $2
 #replace non-https config with https config
 cat > "/etc/nginx/sites-available/$2.conf" <<END
 server{
+    server_name $2;
     listen 80;
     listen [::]:80;
-    server_name $2;
 
     # Redirect all HTTP requests to HTTPS with a 301 Moved Permanently response.
     return 301 https://\$host\$request_uri;
 }
 
 server {
+    server_name $2;
     listen 443 ssl spdy;
     listen [::]:443 ssl spdy;
+    
+    root /home/$1/www/;
+    index index.php;
+    
+    
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
 
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+    location / {
+        # This is cool because no php is touched for static content
+        try_files \$uri \$uri/ /index.php?q=\$uri&\$args;
+    }
+
+    location ~ \.php\$ {
+        #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+        include fastcgi_params;
+        fastcgi_intercept_errors on;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        try_files \$uri =404;
+        fastcgi_pass unix:/var/run/php5-fpm-$1.sock;
+        error_page 404 /404page.html;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)\$ {
+        expires max;
+        log_not_found off;
+    }
+
+    # letsencrypt acme challenge (necessary when redirecting to nodejs or other server) (TODO still necessary with python-certbot-nginx?)
+#    location ^~ /.well-known/acme-challenge/ {
+#        default_type "text/plain";
+#        alias /home/$1/www/.well-known/acme-challenge/;
+#    }
+
+    #headers
+    add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nosniff;
+
+    access_log  /var/log/nginx/$2-access.log;
+    error_log  /var/log/nginx/$2-error.log;
+
+    
+    #TLS config
+    
     # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
     ssl_certificate /etc/letsencrypt/live/$2/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/$2/privkey.pem;
@@ -153,56 +207,6 @@ server {
     resolver_timeout 5s;
 
     ssl_ecdh_curve secp384r1;
-
-    add_header X-Frame-Options DENY;
-    add_header X-Content-Type-Options nosniff;
-
-
-
-    server_name $2;
-    root /home/$1/www/;
-    index index.php;
-
-        location = /favicon.ico {
-                log_not_found off;
-                access_log off;
-        }
-
-        location = /robots.txt {
-                allow all;
-                log_not_found off;
-                access_log off;
-        }
-
-        location / {
-                # This is cool because no php is touched for static content
-                try_files \$uri \$uri/ /index.php?q=\$uri&\$args;
-        }
-
-        location ~ \.php\$ {
-                #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
-                include fastcgi_params;
-                fastcgi_intercept_errors on;
-                fastcgi_index index.php;
-                fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-                try_files \$uri =404;
-                fastcgi_pass unix:/var/run/php5-fpm-$1.sock;
-                error_page 404 /404page.html;
-        }
-
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico)\$ {
-                expires max;
-                log_not_found off;
-        }
-
-        # letsencrypt acme challenge (necessary when redirecting to nodejs or other server) (TODO still necessary with python-certbot-nginx?)
-#        location ^~ /.well-known/acme-challenge/ {
-#                default_type "text/plain";
-#                alias /home/$1/www/.well-known/acme-challenge/;
-#        }
-
-    access_log  /var/log/nginx/$2-access.log;
-    error_log  /var/log/nginx/$2-error.log;
 }
 END
 

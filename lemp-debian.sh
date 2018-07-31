@@ -160,8 +160,9 @@ END
 
 cat > /etc/nginx/sites-available/default <<END
 server {
-    listen 80 default;
     server_name _;
+    listen 80 default;
+    
     root /var/www/;
     include php;
 }
