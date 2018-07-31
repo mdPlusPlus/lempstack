@@ -112,16 +112,10 @@ server{
     listen [::]:80;
     server_name $2;
 
-END
-
-cat >> "/etc/nginx/sites-available/$2.conf" <<'END'
     # Redirect all HTTP requests to HTTPS with a 301 Moved Permanently response.
-    return 301 https://$host$request_uri;
+    return 301 https://\$host\$request_uri;
 }
 
-END
-
-cat >> "/etc/nginx/sites-available/$2.conf" <<END
 server {
     listen 443 ssl spdy;
     listen [::]:443 ssl spdy;
