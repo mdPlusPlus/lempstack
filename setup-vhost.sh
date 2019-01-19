@@ -8,7 +8,8 @@ function check_root() {
 }
 check_root
 
-if [ -z "$1" ];then
+if [ -z "$1" ] || [ -z "$2" ]
+then
         echo "Usage: setup-vhost <username> <hostname>"
         exit
 fi
