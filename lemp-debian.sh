@@ -41,7 +41,12 @@ apt-get install \
     wget
 
 #certbot installation
-apt-get install certbot python-certbot-nginx -t jessie-backports -y
+#first remove previoulsy installed versions
+apt-get remove certbot
+#then install certbot-auto directly from the eff (because TLS-SNI-01 is deprecated)
+wget -O /usr/bin/certbot-auto https://dl.eff.org/certbot-auto
+chmod a+x /usr/bin/certbot-auto
+
 
 #systemd timer
 cat > /etc/systemd/system/certbot.service <<END
@@ -50,7 +55,7 @@ Description=Automatic certification renewal for letsencrypt
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/certbot renew --quiet --nginx
+ExecStart=/usr/bin/certbot-auto renew --quiet
 END
 
 cat > /etc/systemd/system/certbot.timer <<END
