@@ -58,6 +58,7 @@ certbot-auto certonly --rsa-key-size 4096 --nginx -d "$2"
 cat > "/etc/nginx/sites-available/$2.conf" <<END
 server{
     server_name $2;
+    server_tokens off;
     listen 80;
     listen [::]:80;
 
@@ -67,6 +68,7 @@ server{
 
 server {
     server_name $2;
+    server_tokens off;
     listen 443 ssl spdy;
     listen [::]:443 ssl spdy;
 

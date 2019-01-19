@@ -167,7 +167,7 @@ cat > /etc/nginx/sites-available/default <<END
 server {
     server_name _;
     listen 80 default;
-    
+
     root /var/www/;
     include php;
 }
@@ -257,3 +257,4 @@ fi
 echo Installation done.
 echo Use setup-vhost to configure virtual hosts.
 exit
+
