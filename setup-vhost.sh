@@ -1,6 +1,6 @@
 #!/bin/bash
 function check_root() {
-        if [ ! "`whoami`" = "root" ]
+        if [ ! "$(whoami)" = "root" ]
         then
             echo "Root privilege required to run this script. Rerun as root."
             exit 1
@@ -15,15 +15,15 @@ then
 fi
 
 
-adduser $1
+adduser "$1"
 
 #TODO: check if user was succesfully created (valid name, etc.)
 
 mkdir "/home/$1/www/"
-chown -R $1:$1 "/home/$1/www/"
+chown -R "$1":"$1" "/home/$1/www/"
 
 
-cat > /etc/php5/fpm/pool.d/$1.conf <<END
+cat > "/etc/php5/fpm/pool.d/$1.conf" <<END
 [$1]
 listen = /var/run/php5-fpm-$1.sock
 user = $1
@@ -49,8 +49,8 @@ env[TEMP] = /tmp
 END
 
 #certbot
-echo Fetching letsencrypt.org certificate for $2
-certbot-auto certonly --rsa-key-size 4096 --nginx -d $2
+echo "Fetching letsencrypt.org certificate for $2"
+certbot-auto certonly --rsa-key-size 4096 --nginx -d "$2"
 
 #TODO: out-source tls config to external file and include it (easier to keep config up-to-date)
 
@@ -164,13 +164,13 @@ server {
 }
 END
 
-ln -s /etc/nginx/sites-available/$2.conf /etc/nginx/sites-enabled/$2.conf
+ln -s "/etc/nginx/sites-available/$2.conf" "/etc/nginx/sites-enabled/$2.conf"
 
 service nginx reload
 service php5-fpm reload
 
 
-echo Virtual Host Created. Upload Files to /home/$1/www .
+echo "Virtual Host Created. Upload Files to /home/$1/www"
 echo -n "Create MySQL database for user? [y/n][n]:"
 read mysql_db_create
 if [ "$mysql_db_create" == "y" ];then

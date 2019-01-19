@@ -4,7 +4,7 @@ function pause(){
 }
 
 function check_root() {
-        if [ ! "`whoami`" = "root" ]
+        if [ ! "$(whoami)" = "root" ]
         then
             echo "Root privilege required to run this script. Rerun as root."
             exit 1
@@ -73,9 +73,9 @@ END
 systemctl enable certbot.timer
 
 #php-suhosin installation
-wget -q -O suhosin.tar.gz `curl --silent https://api.github.com/repos/sektioneins/suhosin/releases/latest | grep 'tarball_url' | sed 's/"tarball_url": //g' | sed 's/"//g' | sed 's/,//g'`
+wget -q -O suhosin.tar.gz "$(curl --silent https://api.github.com/repos/sektioneins/suhosin/releases/latest | grep 'tarball_url' | cut -d '"' -f 4)"
 tar -xzf suhosin.tar.gz
-cd sektioneins-suhosin-*
+cd sektioneins-suhosin-* || exit
 phpize
 ./configure
 make
@@ -200,7 +200,7 @@ if [ "$pma_install" == "y" ];then
         apt-get install phpmyadmin
         echo -n "Domain for PHPMyAdmin Web Interface? Example:pma.domain.com :"
         read pma_url
-        cat > /etc/nginx/sites-available/$pma_url.conf <<END
+        cat > "/etc/nginx/sites-available/$pma_url.conf" <<END
 server {
     server_name $pma_url;
     root /usr/share/phpmyadmin;
@@ -209,7 +209,7 @@ server {
     error_log  /var/log/nginx/$pma_url-error.log;
 }
 END
-        ln -s /etc/nginx/sites-available/$pma_url.conf /etc/nginx/sites-enabled/$pma_url.conf
+        ln -s "/etc/nginx/sites-available/$pma_url.conf" "/etc/nginx/sites-enabled/$pma_url.conf"
 else
         echo Skipping PhpMyAdmin Installation
 fi
@@ -246,10 +246,11 @@ if ! [ "$dhparam" == "n" ];then
     echo -n "How many bits long should the dhparam file be? [4096]"
     read numbits
     regex='^[0-9]+$'
-    if ! [ "$numbits" =~ "$regex" ];then
+    if ! [[ "$numbits" =~ $regex ]]
+    then
         openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
     else
-        openssl dhparam -out /etc/ssl/certs/dhparam.pem $numbits
+        openssl dhparam -out /etc/ssl/certs/dhparam.pem "$numbits"
     fi
 fi
 
