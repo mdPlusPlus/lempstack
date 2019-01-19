@@ -113,11 +113,12 @@ server {
 #    }
 
     #headers
-    add_header Content-Security-Policy: default-src https:;
+    add_header Content-Security-Policy: "default-src 'https:'";
     add_header Referrer-Policy: same-origin;
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options DENY;
-    add_header X-Xss-Protection "1; mode=block" always;
+#    add_header X-Xss-Protection "1; mode=block" always;
+    add_header X-Xss-Protection "1; mode=block";
     #TODO expand CSP
     #TODO add Expect-CT
     #TODO add Feature Policy
