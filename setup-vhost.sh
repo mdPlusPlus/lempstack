@@ -112,7 +112,7 @@ server {
     #headers
     # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
     add_header Strict-Transport-Security "max-age=15768000; includeSubdomains; preload";
-    add_header Content-Security-Policy "default-src 'https:'";
+    add_header Content-Security-Policy "default-src https:";
     add_header Referrer-Policy same-origin;
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options DENY;
