@@ -108,13 +108,10 @@ server {
         log_not_found off;
     }
 
-#    # letsencrypt acme challenge (necessary when redirecting to nodejs or other server) (TODO still necessary with python-certbot-nginx?)
-#    location ^~ /.well-known/acme-challenge/ {
-#        default_type "text/plain";
-#        alias /home/$1/www/.well-known/acme-challenge/;
-#    }
 
     #headers
+    # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+    add_header Strict-Transport-Security "max-age=15768000; includeSubdomains; preload";
     add_header Content-Security-Policy "default-src 'https:'";
     add_header Referrer-Policy same-origin;
     add_header X-Content-Type-Options nosniff;
@@ -146,14 +143,7 @@ server {
 
     # taken from https://mozilla.github.io/server-side-tls/ssl-config-generator/
     ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
-#    ssl_ciphers "HIGH:!eNULL:!aNULL:!SHA1:!AES128";
-
     ssl_prefer_server_ciphers on;
-
-    # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
-#    add_header Strict-Transport-Security max-age=15768000;
-    # taken from https://cipherli.st/
-    add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
 
     # OCSP Stapling ---
     # fetch OCSP records from URL in ssl_certificate and cache them
