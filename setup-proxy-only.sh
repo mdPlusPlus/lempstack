@@ -60,6 +60,8 @@ server {
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options DENY;
     add_header X-Xss-Protection "1; mode=block";
+    add_header Feature-Policy "accelerometer 'none'; ambient-light-sensor 'none'; autoplay 'none'; camera 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; sync-xhr 'none'; usb 'none'; vr 'none'";
+
 
     access_log  /var/log/nginx/$1-access.log;
     error_log  /var/log/nginx/$1-error.log;
