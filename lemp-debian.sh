@@ -217,6 +217,7 @@ fi
 #https://dev.chromium.org/spdy/spdy-best-practices
 #Turn off tcp_slow_start_after_idle
 sysctl -w net.ipv4.tcp_slow_start_after_idle=0
+echo "net.ipv4.tcp_slow_start_after_idle = 0" > /etc/sysctl.d/10-net.ipv4.tcp_slow_start_after_idle.conf
 
 mkdir /var/www
 chown -R www-data:www-data /var/www
