@@ -215,10 +215,8 @@ else
 fi
 
 #https://dev.chromium.org/spdy/spdy-best-practices
-#TODO: Servers should ensure initcwnd is at least 10
 #Turn off tcp_slow_start_after_idle
 sysctl -w net.ipv4.tcp_slow_start_after_idle=0
-#TODO: Persist cwnd (?)
 
 mkdir /var/www
 chown -R www-data:www-data /var/www
