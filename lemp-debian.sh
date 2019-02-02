@@ -13,9 +13,6 @@ function check_root() {
 check_root
 
 
-#TODO: add add backports to apt sources conditionally
-
-
 apt-get remove apache2*
 apt-get update && apt-get upgrade
 
